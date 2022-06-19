@@ -57,6 +57,27 @@
                     $tabla = devolverTabla();
                 }
 
+                if (sizeof(mysqli_fetch_array($tabla)) > 0  ){
+                    $bandera = True;
+                
+    
+                    $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+                    $total = $tabla->num_rows;
+                    $limit = 5;
+                    $cantPage = ceil($total / $limit);
+                    $start =  ($page - 1) * $limit;
+                
+                    $limitQuery = "LIMIT $start,$limit";
+                    if(isset($_GET['search']))
+                    {
+                        $tabla = buscar($_GET['search'],$limitQuery);
+                    }
+                    else
+                    {
+                        
+                        $tabla = devolverTablaConLimite($limitQuery);
+                    }
+     
 
                while ($fila = mysqli_fetch_array($tabla))
             {
@@ -76,14 +97,53 @@
                     </tr>
             <?php
             }
-    
+       
+        }
+     
+        else
+        {
+            echo "<td>Ups</td>";
+            echo "<td>No se encontraron resultados</td>";
+        }
+        
+
+
+ 
 
             ?>
                 
 
             </tbody>
         </table>
+        <?php
+        if($bandera)
+        {
 
+        
+        ?>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a href="index.php?page=<?= $page - 1 != 0 ?  $page - 1 : 1 ?> <?= isset($_GET['search']) ? '&search=' . $_GET['search'] : ''  ?>"
+                        class="<?= $page - 1 == 0 ? 'disabled ' : '' ?> py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-blue-500 hover:text-gray-100 dark:bg-blue-500 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-blue-700 dark:hover:text-white">Previous</a>
+                </li>
+
+                <?php for ($i = 1; $i <= $cantPage; $i++) { ?>
+                <li class="page-item">
+                    <a href="index.php?page=<?= $i ?><?= isset($_GET['search']) ? '&search=' . $_GET['search'] : ''  ?>"
+                        class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"><?= $i ?></a>
+                </li class="page-item">
+
+                <?php } ?>
+                <li class="page-item">
+                    <a href="index.php?page=<?= $page + 1 ?> <?= isset($_GET['search']) ? '&search=' . $_GET['search'] : ''  ?>"
+                        class=" <?= $page + 1 > $cantPage ? 'disabled ' : '' ?> py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-blue-700 dark:hover:text-white">Next</a>
+                </li class="page-item">
+            </ul>
+        </nav>
+        <?php
+       }
+        ?>
     </main>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"

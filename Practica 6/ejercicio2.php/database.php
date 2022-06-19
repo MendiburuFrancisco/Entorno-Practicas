@@ -28,16 +28,25 @@ function devolverUltimoID()
     return realizarQuery('capitales',$query);
 }
 
-function devolverTabla($nombreTabla="ciudades",$where ="",$id ="",$nombreDB="capitales")
+function devolverTabla($where ="",$id ="",$nombreDB="capitales")
 {
-    $query = "SELECT * FROM ".$nombreTabla." ".$where." ".$id." ";
+    $query = "SELECT * FROM ciudades ".$where." ".$id." ";
     return realizarQuery($nombreDB,$query);
     
 }
 
-function buscar($busqueda)
+function devolverTablaConLimite($limit)
 {
-    $query = "SELECT * FROM ciudades WHERE CONCAT(id,' ',ciudad,' ',pais,' ',habitante,' ',superficie) LIKE '%".$busqueda."%'";
+    $query = "SELECT * FROM ciudades ".$limit;
+    return realizarQuery("capitales",$query);
+    
+}
+
+ 
+
+function buscar($busqueda,$limit ="")
+{
+    $query = "SELECT * FROM ciudades WHERE CONCAT(id,' ',ciudad,' ',pais,' ',habitante,' ',superficie) LIKE '%".$busqueda."%' ".$limit;
     return realizarQuery("capitales",$query);
 }
 
@@ -119,10 +128,10 @@ function modificarCapital()
 
 function eliminarCapital($id)
 {
-        if(mysqli_num_rows(devolverTabla("ciudades"," WHERE id = ",$id)) > 0)
+        if(mysqli_num_rows(devolverTabla(" WHERE id = ",$id)) > 0)
         {
             $query = "DELETE FROM ciudades WHERE id =".$id;
-            $res = realizarQuery('capitales',$query);
+            $res = realizarQuery("capitales",$query);
      
             return True;
         }

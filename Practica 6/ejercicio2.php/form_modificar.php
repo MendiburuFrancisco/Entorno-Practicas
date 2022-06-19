@@ -16,7 +16,7 @@
             include("database.php");
             //Captura datos desde el Form anterior
             
-            $fila = mysqli_fetch_array(devolverTabla("ciudades"," WHERE id = ",$_GET['id']));
+            $fila = mysqli_fetch_array(devolverTabla(" WHERE id = ",$_GET['id']));
  
             ?>
 <body class=" bg-light text-dark">
